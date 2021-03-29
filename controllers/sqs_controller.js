@@ -8,9 +8,9 @@ console.log('Config Path',configPath);
 AWS.config.loadFromPath(configPath);
 
 // AWS.config.update({
-//     region: 'us-east-2',
-//     accessKeyId:'AKIAZ3SS2PVMGLSI2MMF',
-//     secretAccessKey:'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'
+//     region: '',
+//     accessKeyId:'',
+//     secretAccessKey:''
 // });
 
 
