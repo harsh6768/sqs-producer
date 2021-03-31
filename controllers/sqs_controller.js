@@ -8,9 +8,9 @@ console.log('Config Path',configPath);
 AWS.config.loadFromPath(configPath);
 
 // AWS.config.update({
-//     region: 'us-east-2',
-//     accessKeyId:'AKIAZ3SS2PVMGLSI2MMF',
-//     secretAccessKey:'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'
+//     region: '',
+//     accessKeyId:'',
+//     secretAccessKey:''
 // });
 
 
@@ -89,7 +89,11 @@ class SqsController{
         let {messages}=req.body;
 
         // async function sendMessages(queueUrl, messages) {
+        console.time('SplitTime')
         const spilttedArray = splitArray(messages, 10);
+        console.timeEnd('SplitTime');
+        console.time('SendWhole');
+        let promiseList=[];
         for (const arr of spilttedArray) {
             console.log('Method Called >>>>>>>>>>>>>>>>>>>>>>>>>>>>');
             var params = {
@@ -104,10 +108,17 @@ class SqsController{
                     MessageDeduplicationId: message.email
                 });
             }
-            await sqs.sendMessageBatch(params).promise();
-            
+            console.time('SendMsg');
+            sqs.sendMessageBatch(params).promise().then(data=>{}).catch(err=>console.log('Error:',err));
+            // let messagePromise=sqs.sendMessageBatch(params).promise();
+            // promiseList.push(messagePromise);
+            console.timeEnd('SendMsg');            
         }
-
+        // Promise.all(promiseList).then(data=>{
+        //     console.log('Data >>>>>>>>>');
+        //     console.log(data)
+        // })
+        console.timeEnd('SendWhole');
         res.status(200).json({
             data:'Message sent successfully!'
         })
@@ -195,6 +206,22 @@ class SqsController{
             return data.Messages;
         }
         
+    }
+
+    static async createTestData(req,res){
+        let testLength=100000;
+        let responseData=[];
+        for(let index=0;index<testLength;index++){
+            let messageData={
+                message:`Test message ${index+1}`,
+                email:`test${index+1}@yopmail.com`
+            }
+            responseData.push(messageData);
+        }
+        console.log('Message List>>>>>>>>>>')
+        console.log(responseData);
+
+        res.status(200).json({data:responseData});
     }
 
 }

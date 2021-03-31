@@ -10,6 +10,7 @@ Router.post('/sendMessage',SqsController.sendMessageToQueue);
 Router.post('/send-bulk-message',SqsController.sendBatchMessage);
 Router.get('/getAllMessages',SqsController.receiveMessageFromSqs);
 Router.get('/test',(req,res)=>res.send('Server apis are working just fine !'));
+Router.get('/createTestData',SqsController.createTestData);
 
 
 
